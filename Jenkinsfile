@@ -5,8 +5,8 @@ pipeline{
     agent any
 
     environment {
-    DOCKER_CREDS = credentials('fellouze-docker-creds')
-    PROJECT_NAME= "storemanagement"
+    DOCKER_CREDS = credentials('dockerhubcreds')
+    PROJECT_NAME= "store-management"
     DOCKER_REPO= "${DOCKER_CREDS_USR}/${PROJECT_NAME}"
     IMAGE_TAG= "${BUILD_ID}-${BRANCH_NAME}-g1s"
     STOREMANAGEMENT_DOCKER_IMAGE= "${DOCKER_REPO}:${IMAGE_TAG}"
@@ -36,7 +36,7 @@ pipeline{
         }
         stage('trigger deploy'){
             steps{
-               withCredentials([gitUsernamePassword(credentialsId: 'fellouze-gitlab-creds', gitToolName: 'git-tool')])  {
+               withCredentials([gitUsernamePassword(credentialsId: 'githubcreds', gitToolName: 'git-tool')])  {
                 powershell "git clone https://gitlab.com/storemanagement2024/infa-repo-prod.git"
                 dir("infa-repo-prod"){
                     powershell "docker run -v '.:/workdir' mikefarah/yq:4 eval '.services.store-management.image = \"\"${STOREMANAGEMENT_DOCKER_IMAGE}\"\"' -i /workdir/compose.yaml"
