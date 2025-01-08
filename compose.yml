@@ -1,0 +1,32 @@
+version: "3.7"
+name: devops
+
+services:
+  store-management:
+    image: ${STOREMANAGEMENT_DOCKER_IMAGE}
+    restart: on-failure
+    depends_on:
+      - mysql
+    ports:
+      - "${NODE_PORT}:${SM_CONTAINER_PORT}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/store?createDatabaseIfNotExist=true
+      SERVER_PORT: "${SM_CONTAINER_PORT}"
+
+  mysql:
+    image: mysql:8.0.39-debian
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data-compose:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+
+
+volumes:
+  mysql-data-compose:
+
+
+
+
